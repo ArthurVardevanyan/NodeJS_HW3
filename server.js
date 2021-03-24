@@ -23,19 +23,30 @@ app.delete('/', (req, res) => {
 });
 
 app.get('/', (req, res, next) => {
-  // const DatesToValidate = [];
-  let header = req.headers['date-validation'];
-  header = Number.parseInt(header, 10);
-  if (!Number.isNaN(header)) {
-    header *= 1000;
-  }
-  const headerDate = (new Date(header)).getTime() / 1000;
-  const serverTime = (new Date()).getTime() / 1000;
+  const datesToValidate = [];
+  const epochsToValidate = [];
+  datesToValidate.push(req.headers['date-validation']);
+  // datesToValidate.push(req.query['date-validation']);
 
-  if (headerDate > (serverTime - (5 * 60)) && headerDate < (serverTime + (5 * 60))) {
-    req.dateValidation = headerDate;
-    next();
-  } else {
+  datesToValidate.forEach((d) => {
+    let date = Number.parseInt(d, 10);
+    if (Number.isNaN(date)) {
+      date = (new Date(date)).getTime() / 1000;
+    }
+    epochsToValidate.push(date);
+  });
+
+  if (epochsToValidate.every((val, i, arr) => val === arr[0])) {
+    const serverTime = Math.floor(Date.now() / 1000);
+    const epochTime = epochsToValidate.slice(0)[0];
+    if (epochTime > (serverTime - (5 * 60))
+    && epochTime < (serverTime + (5 * 60))) {
+      req.dateValidation = epochTime;
+      req.epochTime = serverTime;
+      next();
+    } else {
+      res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+    }
     res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
   }
 });
@@ -43,7 +54,7 @@ app.get('/', (req, res, next) => {
 app.use('/', (req, res, next) => {
   winstonLogger.log({
     level: 'info',
-    epochTime: Math.floor(Date.now() / 1000),
+    serverTime: req.serverTime,
     requestType: req.method,
     url: req.url,
     body: req.body,
