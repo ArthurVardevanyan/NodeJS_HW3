@@ -45,8 +45,12 @@ app.use('/', (req, res) => {
   if (random === 1) {
     res.status(StatusCodes.OK).send('Hello World');
   } else {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    throw new Error('50% Failure');
   }
+});
+
+app.use((err, req, res, next) => {
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
 });
 
 app.listen(8080);
