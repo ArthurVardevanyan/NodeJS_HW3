@@ -23,11 +23,10 @@ app.delete('/', (req, res) => {
 });
 
 app.get('/', (req, res, next) => {
-  res.status(StatusCodes.OK).send('Hello World');
   next();
 });
 
-app.use('/', (req) => {
+app.use('/', (req, res, next) => {
   winstonLogger.log({
     level: 'info',
     epochTime: Math.floor(Date.now() / 1000),
@@ -38,6 +37,16 @@ app.use('/', (req) => {
     headers: req.headers,
     dateValidation: 'Function Not Created Yet',
   });
+  next();
+});
+
+app.use('/', (req, res) => {
+  const random = Math.round(Math.random());
+  if (random === 1) {
+    res.status(StatusCodes.OK).send('Hello World');
+  } else {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+  }
 });
 
 app.listen(8080);
