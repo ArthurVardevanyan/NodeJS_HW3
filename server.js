@@ -33,6 +33,7 @@ app.get('/', (req, res, next) => {
   const serverTime = (new Date()).getTime() / 1000;
 
   if (headerDate > (serverTime - (5 * 60)) && headerDate < (serverTime + (5 * 60))) {
+    req.dateValidation = headerDate;
     next();
   } else {
     res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
@@ -48,7 +49,7 @@ app.use('/', (req, res, next) => {
     body: req.body,
     query: req.query,
     headers: req.headers,
-    dateValidation: 'Function Not Created Yet',
+    dateValidation: req.dateValidation,
   });
   next();
 });
