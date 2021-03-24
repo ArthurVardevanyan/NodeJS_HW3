@@ -23,7 +23,20 @@ app.delete('/', (req, res) => {
 });
 
 app.get('/', (req, res, next) => {
-  next();
+  // const DatesToValidate = [];
+  let header = req.headers['date-validation'];
+  header = Number.parseInt(header, 10);
+  if (!Number.isNaN(header)) {
+    header *= 1000;
+  }
+  const headerDate = (new Date(header)).getTime() / 1000;
+  const serverTime = (new Date()).getTime() / 1000;
+
+  if (headerDate > (serverTime - (5 * 60)) && headerDate < (serverTime + (5 * 60))) {
+    next();
+  } else {
+    res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+  }
 });
 
 app.use('/', (req, res, next) => {

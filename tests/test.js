@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 const app = require('../server');
 
 const getFunction = async () => {
-  const res = await chai.request(app).get('/').send();
+  const res = await (await chai.request(app).get('/').set('date-validation', ((new Date()).getTime() / 1000)));
   if (res.status === StatusCodes.OK) {
     return -1;
   }
@@ -37,5 +37,12 @@ describe('DELETE /', () => {
   it('should return status 405', async () => {
     const res = await chai.request(app).delete('/').send();
     expect(res.status).to.equal(StatusCodes.METHOD_NOT_ALLOWED);
+  });
+});
+
+describe('Get / Out Of Spec', () => {
+  it('return 401 for out of spec date', async () => {
+    const res = await (await chai.request(app).get('/').set('date-validation', '1616425184'));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
   });
 });
