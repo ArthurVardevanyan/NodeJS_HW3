@@ -1,6 +1,6 @@
 const Express = require('express');
 const Winston = require('winston');
-const { StatusCodes } = require('http-status-codes');
+const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 
 const app = Express();
 app.use(Express.json());
@@ -16,6 +16,10 @@ const winstonLogger = Winston.createLogger({
       ),
     }),
   ],
+});
+
+app.delete('/', (req, res) => {
+  res.status(StatusCodes.METHOD_NOT_ALLOWED).send(ReasonPhrases.METHOD_NOT_ALLOWED);
 });
 
 app.get('/', (req, res, next) => {

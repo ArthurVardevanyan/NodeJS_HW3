@@ -12,3 +12,10 @@ describe('GET /', () => {
     expect(res.status).to.equal(StatusCodes.OK);
   });
 });
+
+describe('DELETE /', () => {
+  it('should return status 405', async () => {
+    const res = await chai.request(app).delete('/').send();
+    expect(res.status).to.equal(StatusCodes.METHOD_NOT_ALLOWED);
+  });
+});
