@@ -51,7 +51,7 @@ app.use('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`We're sorry, the error was: ${ReasonPhrases.INTERNAL_SERVER_ERROR}`);
 });
 
 app.listen(8080);
