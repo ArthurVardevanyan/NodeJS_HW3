@@ -25,8 +25,22 @@ app.delete('/', (req, res) => {
 app.get('/', (req, res, next) => {
   const datesToValidate = [];
   const epochsToValidate = [];
-  datesToValidate.push(req.headers['date-validation']);
-  // datesToValidate.push(req.query['date-validation']);
+  Object.keys(req.headers).forEach((key) => {
+    if (key.toLowerCase() === 'date-validation') {
+      const dates = req.headers[key].split(', ');
+      dates.forEach((date) => {
+        datesToValidate.push(date);
+      });
+    }
+  });
+  Object.keys(req.query).forEach((key) => {
+    if (key.toLowerCase() === 'date-validation') {
+      const dates = req.query[key].split(', ');
+      dates.forEach((date) => {
+        datesToValidate.push(date);
+      });
+    }
+  });
 
   datesToValidate.forEach((d) => {
     let date = Number.parseInt(d, 10);
@@ -41,12 +55,13 @@ app.get('/', (req, res, next) => {
     const epochTime = epochsToValidate.slice(0)[0];
     if (epochTime > (serverTime - (5 * 60))
     && epochTime < (serverTime + (5 * 60))) {
-      req.dateValidation = epochTime;
-      req.epochTime = serverTime;
+      // req.dateValidation = epochTime;
+      // req.epochTime = serverTime;
       next();
     } else {
       res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
+  } else {
     res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
   }
 });
