@@ -2,9 +2,9 @@ const Express = require('express');
 
 const app = Express();
 
-const DateValidation = require('./middleware.dateValidation');
-const Middleware = require('./middleware');
-const Routes = require('./routes');
+const DateValidation = require('./middleware/middleware.dateValidation');
+const Middleware = require('./middleware/middleware');
+const Routes = require('./routes/routes');
 
 app.use(Express.json());
 app.use(Middleware.delete);
