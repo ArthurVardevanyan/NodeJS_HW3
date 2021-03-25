@@ -22,7 +22,7 @@ app.delete('/', (req, res) => {
   res.status(StatusCodes.METHOD_NOT_ALLOWED).send(ReasonPhrases.METHOD_NOT_ALLOWED);
 });
 
-app.get('/', (req, res, next) => {
+app.use('/', (req, res, next) => {
   const datesToValidate = [];
   const epochsToValidate = [];
   Object.keys(req.headers).forEach((key) => {
