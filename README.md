@@ -21,7 +21,7 @@ app.delete('/', (req, res) => {
         * Example: if the current date/time on the server is [Sunday, July 5, 2020 10:25:14 PM GMT-04:00 DST] (epoch: 1594002314), then the value of the date-validation field should be 1594002014 <= time <= 1594002614.
 
 ```Javascript
-dateValidation.js
+middleware.dateValidation.js
 ```
 
 4. Log the entirety of the incoming request, including: current server time (epoch), HTTP verb, URL, body, query parameters, headers, and dateValidation field (from previous middleware).
