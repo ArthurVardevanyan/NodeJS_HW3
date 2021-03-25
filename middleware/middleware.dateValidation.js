@@ -1,24 +1,22 @@
 const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 
+function headerSearch(datesToValidate, dateValidation) {
+  Object.keys(dateValidation).forEach((key) => {
+    if (key.toLowerCase() === 'date-validation') {
+      const dates = dateValidation[key].split(', ');
+      dates.forEach((date) => {
+        datesToValidate.push(date);
+      });
+    }
+  });
+}
+
 module.exports = (req, res, next) => {
   const datesToValidate = [];
   const epochsToValidate = [];
-  Object.keys(req.headers).forEach((key) => {
-    if (key.toLowerCase() === 'date-validation') {
-      const dates = req.headers[key].split(', ');
-      dates.forEach((date) => {
-        datesToValidate.push(date);
-      });
-    }
-  });
-  Object.keys(req.query).forEach((key) => {
-    if (key.toLowerCase() === 'date-validation') {
-      const dates = req.query[key].split(', ');
-      dates.forEach((date) => {
-        datesToValidate.push(date);
-      });
-    }
-  });
+
+  headerSearch(datesToValidate, req.headers);
+  headerSearch(datesToValidate, req.query);
 
   datesToValidate.forEach((d) => {
     let date = Number.parseInt(d, 10);
