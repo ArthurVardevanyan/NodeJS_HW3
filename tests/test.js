@@ -46,3 +46,29 @@ describe('Get / Out Of Spec', () => {
     expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
   });
 });
+
+describe('Get / Out Of Spec, Query & Header', () => {
+  it('return 401 for out of spec date', async () => {
+    const res = await (await chai.request(app).get('/?date-validation=1616425183').set('date-validation', '1616425184'));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+});
+
+describe('Get / In Spec, Query & Header EPOCH', () => {
+  it('OK OR INTERNAL_SERVER_ERROR', async () => {
+    const res = await (await chai.request(app).get(`/?date-validation=${(new Date()).getTime() / 1000}`).set('date-validation', ((new Date()).getTime() / 1000)));
+    expect(res.status).to.satisfy((code) => {
+      if ((code === StatusCodes.OK) || (code === StatusCodes.INTERNAL_SERVER_ERROR)) {
+        return true;
+      }
+      return false;
+    });
+  });
+});
+
+describe('Get / In Spec, Header NOT EPOCH FORMAT ', () => {
+  it('return 401 for out of spec date', async () => {
+    const res = await (await chai.request(app).get('/').set('date-validation', 'Fri, 26 Mar 2021 02:48:31 GMT'));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+});

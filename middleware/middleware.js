@@ -25,7 +25,7 @@ exports.delete = (req, res, next) => {
 exports.logs = (req, res, next) => {
   winstonLogger.log({
     level: 'info',
-    serverTime: req.epochTime,
+    serverTime: req.serverTime,
     requestType: req.method,
     url: req.url,
     body: req.body,

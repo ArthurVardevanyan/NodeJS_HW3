@@ -19,20 +19,19 @@ module.exports = (req, res, next) => {
   headerSearch(datesToValidate, req.query);
 
   datesToValidate.forEach((d) => {
-    let date = Number.parseInt(d, 10);
-    if (Number.isNaN(date)) {
-      date = (new Date(date)).getTime() / 1000;
+    const date = Number.parseInt(d, 10);
+    if (!Number.isNaN(date)) {
+      epochsToValidate.push(date);
     }
-    epochsToValidate.push(date);
   });
 
   if (epochsToValidate.every((val, i, arr) => val === arr[0])) {
     const serverTime = Math.floor(Date.now() / 1000);
-    const epochTime = epochsToValidate.slice(0)[0];
-    if (epochTime > (serverTime - (5 * 60))
-      && epochTime < (serverTime + (5 * 60))) {
-      req.dateValidation = epochTime;
-      req.epochTime = serverTime;
+    const requestTime = epochsToValidate.slice(0)[0];
+    if (requestTime > (serverTime - (5 * 60))
+      && requestTime < (serverTime + (5 * 60))) {
+      req.dateValidation = requestTime;
+      req.serverTime = serverTime;
       next();
     } else {
       res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);

@@ -72,10 +72,10 @@ const winstonLogger = Winston.createLogger({
 ```JavaScript
 # middleware/middleware.js
 
-app.use('/', (req, res, next) => {
+exports.logs = (req, res, next) => {
   winstonLogger.log({
     level: 'info',
-    serverTime: req.epochTime,
+    serverTime: req.serverTime,
     requestType: req.method,
     url: req.url,
     body: req.body,
@@ -84,7 +84,7 @@ app.use('/', (req, res, next) => {
     dateValidation: req.dateValidation,
   });
   next();
-});
+};
 ```
 6. If the request is able to proceed through the first set of middleware, then all HTTP methods for the path "/" should randomly:
 
