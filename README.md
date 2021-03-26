@@ -5,14 +5,22 @@
 
 1. Automatically parse the incoming body as JSON
 ```Javascript
+# server.js
+
 app.use(Express.json()); 
 ```
 
 2. If the HTTP verb DELETE was used, then stop the propagation of the request and reply with a 405 status code.
 ```Javascript
-app.delete('/', (req, res) => {
-  res.status(StatusCodes.METHOD_NOT_ALLOWED).send(ReasonPhrases.METHOD_NOT_ALLOWED);
-});
+# middleware/middleware.js
+
+exports.delete = (req, res, next) => {
+  if (req.method === 'DELETE') {
+    res.status(StatusCodes.METHOD_NOT_ALLOWED).send(ReasonPhrases.METHOD_NOT_ALLOWED);
+  } else {
+    next();
+  }
+};
 ```
 3. Verify that either a query string parameter called "date-validation" or a header with the same name (case insensitive) was supplied and has a value that represents an epoch time that is within +/- 5 minutes of the current time on the server.
     * If an in-spec date was provided in either location, then allow the request to continue (except for an edge case mentioned below).
@@ -21,7 +29,7 @@ app.delete('/', (req, res) => {
         * Example: if the current date/time on the server is [Sunday, July 5, 2020 10:25:14 PM GMT-04:00 DST] (epoch: 1594002314), then the value of the date-validation field should be 1594002014 <= time <= 1594002614.
 
 ```Javascript
-middleware/middleware.dateValidation.js
+# middleware/middleware.dateValidation.js
 ```
 
 4. Log the entirety of the incoming request, including: current server time (epoch), HTTP verb, URL, body, query parameters, headers, and dateValidation field (from previous middleware).
@@ -46,6 +54,8 @@ middleware/middleware.dateValidation.js
 ```
 5. You should use the Winston logging library for Node.js to perform all logging tasks.
 ```Javascript
+# middleware/middleware.js
+
 const winstonLogger = Winston.createLogger({
   transports: [
     new Winston.transports.Console({
@@ -60,6 +70,8 @@ const winstonLogger = Winston.createLogger({
 });
 ```
 ```JavaScript
+# middleware/middleware.js
+
 app.use('/', (req, res, next) => {
   winstonLogger.log({
     level: 'info',
@@ -79,18 +91,22 @@ app.use('/', (req, res, next) => {
     * 50% of the time: 200 status code and the text "Hello World"
     * 50% of the time: throw an error with the message "Oops"
 ```Javascript
-app.use('/', (req, res) => {
+# controllers/controller.js
+
+exports.random = (req, res) => {
   const random = Math.round(Math.random());
   if (random === 1) {
     res.status(StatusCodes.OK).send('Hello World');
   } else {
     throw new Error('50% Failure');
   }
-});
+};
 ```
 7. At the end of the middleware and routing chain, you should add one final middleware that catches any errors and sends the text "We're sorry, the error was: " ... along with the message from the exception that was thrown, and a 500 status code.
 ```JavaScript
-app.use((err, req, res, next) => {
+# middleware/middleware.js
+
+exports.error = (err, req, res, next) => {
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`We're sorry, the error was: ${ReasonPhrases.INTERNAL_SERVER_ERROR}`);
-});
+};
 ```
