@@ -4,6 +4,6 @@ const router = Express.Router();
 
 const Controller = require('../controllers/controller');
 
-router.use('/', Controller.random);
+router.all('/', Controller.random);
 
 module.exports = router;
