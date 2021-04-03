@@ -10,7 +10,7 @@ app.use(Express.json());
 app.use(Middleware.delete);
 app.use(DateValidation);
 app.use(Middleware.logs);
-app.use('/', Routes);
+app.use(Routes);
 app.use(Middleware.error);
 
 app.listen(8080);
