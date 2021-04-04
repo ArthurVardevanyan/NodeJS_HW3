@@ -72,3 +72,17 @@ describe('Get / In Spec, Header NOT EPOCH FORMAT ', () => {
     expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
   });
 });
+
+describe('Get / No Date', () => {
+  it('return 401 for not date', async () => {
+    const res = await (await chai.request(app).get('/'));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+});
+
+describe('Get / Both In Spec but different, Query & Header EPOCH', () => {
+  it('OK OR INTERNAL_SERVER_ERROR', async () => {
+    const res = await (await chai.request(app).get(`/?date-validation=${((new Date()).getTime() / 1000) + 1}`).set('date-validation', ((new Date()).getTime() / 1000)));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+});
