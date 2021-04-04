@@ -98,7 +98,7 @@ exports.random = (req, res) => {
   if (random === 1) {
     res.status(StatusCodes.OK).send('Hello World');
   } else {
-    throw new Error('50% Failure');
+    throw new Error('Oops');
   }
 };
 ```
@@ -106,7 +106,7 @@ exports.random = (req, res) => {
 ```JavaScript
 # middleware/middleware.js
 
-exports.error = (err, req, res, next) => {
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`We're sorry, the error was: ${ReasonPhrases.INTERNAL_SERVER_ERROR}`);
+exports.error = (err, req, res, _next) => {
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`${ReasonPhrases.INTERNAL_SERVER_ERROR}: We're sorry, the error was:  ${err.message}`);
 };
 ```

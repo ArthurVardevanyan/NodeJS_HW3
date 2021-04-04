@@ -37,5 +37,5 @@ exports.logs = (req, res, next) => {
 };
 
 exports.error = (err, req, res, _next) => {
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`We're sorry, the error was: ${ReasonPhrases.INTERNAL_SERVER_ERROR}`);
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`${ReasonPhrases.INTERNAL_SERVER_ERROR}: We're sorry, the error was:  ${err.message}`);
 };
