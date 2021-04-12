@@ -13,7 +13,7 @@ function headerSearch(datesToValidate, dateValidation) {
 
 module.exports = (req, res, next) => {
   const datesToValidate = [];
-  const epochsToValidate = [];
+  let epochsToValidate = [];
 
   headerSearch(datesToValidate, req.headers);
   headerSearch(datesToValidate, req.query);
@@ -22,6 +22,8 @@ module.exports = (req, res, next) => {
     const date = Number.parseInt(d, 10);
     if (!Number.isNaN(date)) {
       epochsToValidate.push(date);
+    } else {
+      epochsToValidate = [];
     }
   });
 
