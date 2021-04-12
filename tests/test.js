@@ -81,8 +81,15 @@ describe('Get / No Date', () => {
 });
 
 describe('Get / Both In Spec but different, Query & Header EPOCH', () => {
-  it('OK OR INTERNAL_SERVER_ERROR', async () => {
+  it('return 401 for not dat', async () => {
     const res = await (await chai.request(app).get(`/?date-validation=${((new Date()).getTime() / 1000) + 1}`).set('date-validation', ((new Date()).getTime() / 1000)));
+    expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+});
+
+describe('Get / Both Query & Header EPOCH One Number, One String', () => {
+  it('return 401 for not dat', async () => {
+    const res = await (await chai.request(app).get('/?date-validation=test').set('date-validation', ((new Date()).getTime() / 1000)));
     expect(res.status).to.equal(StatusCodes.UNAUTHORIZED);
   });
 });
